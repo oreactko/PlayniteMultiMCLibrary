@@ -109,6 +109,25 @@ public sealed class PrismLauncher : BaseLauncher
     }
 }
 
+public sealed class ElyPrismLauncher : BaseLauncher
+{
+    public override string Name => "ElyPrismLauncher";
+    public static string RelativeExecutablePath => "elyprismlauncher.exe";
+    public override string ExecutablePath => Path.Combine(InstallDirectory, RelativeExecutablePath);
+    public override string ConfigPath => Path.Combine(DataDirectory, "elyprismlauncher.cfg");
+    public override string ProcessName => "PineconeMC";
+    public override string IconName => "icon-prismlauncher.png";
+    public override string DataDirectory { get; }
+
+    public PrismLauncher(string installDirectory) : base(installDirectory)
+    {
+        var isPortable = File.Exists(Path.Combine(installDirectory, "portable.txt"));
+        DataDirectory = isPortable
+            ? InstallDirectory
+            : Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "ElyPrismLauncher"); // TODO test as admin
+    }
+}
+
 public class MultiMcLibrary : LibraryPlugin
 {
     internal static readonly string AssemblyPath = Path.GetDirectoryName(typeof(MultiMcLibrary).Assembly.Location) ?? ".";
@@ -120,7 +139,7 @@ public class MultiMcLibrary : LibraryPlugin
 
     public override Guid Id { get; } = Guid.Parse("6ab2531e-4800-404b-a938-4421b28a9f3e");
 
-    public override string Name => "MultiMC/PolyMC/Prism";
+    public override string Name => "MultiMC/PolyMC/Prism/ElyPrism";
 
     // Implementing Client adds ability to open it via special menu in playnite.
     public override LibraryClient Client { get; }
@@ -186,6 +205,10 @@ public class MultiMcLibrary : LibraryPlugin
         else if (File.Exists(Path.Combine(rootFolder, PrismLauncher.RelativeExecutablePath)))
         {
             Launcher = new PrismLauncher(rootFolder);
+        }
+        else if (File.Exists(Path.Combine(rootFolder, ElyPrismLauncher.RelativeExecutablePath)))
+        {
+            Launcher = new ElyPrismLauncher(rootFolder);
         }
         else
         {
