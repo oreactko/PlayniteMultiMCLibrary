@@ -119,7 +119,7 @@ public sealed class ElyPrismLauncher : BaseLauncher
     public override string IconName => "icon-prismlauncher.png";
     public override string DataDirectory { get; }
 
-    public PrismLauncher(string installDirectory) : base(installDirectory)
+    public ElyPrismLauncher(string installDirectory) : base(installDirectory)
     {
         var isPortable = File.Exists(Path.Combine(installDirectory, "portable.txt"));
         DataDirectory = isPortable
